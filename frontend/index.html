@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepGuard - AI-Powered Media Authentication Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #FFF7F5;
+      color: #302A40;
+      line-height: 1.6;
+    }
+
+    /* Header Section */
+    .header {
+      background: linear-gradient(135deg, #F26B4F 0%, #FF8F76 100%);
+      color: white;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 20px rgba(242, 107, 79, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      opacity: 0.4;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+
+    .logo-text {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .header .subtitle {
+      font-size: 1.15rem;
+      opacity: 0.95;
+      font-weight: 400;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      background: white;
+      border-bottom: 1px solid #FFD9C9;
+      padding: 1.25rem 2rem;
+    }
+
+    .stats-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #F26B4F, #A99AE7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: #302A40;
+    }
+
+    .section-description {
+      color: #666;
+      font-size: 1.05rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Tools Grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .tool-card {
+      background: white;
+      border: 1px solid #FFD9C9;
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(135deg, #F26B4F, #A99AE7);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 35px rgba(242, 107, 79, 0.15);
+      border-color: #F26B4F;
+      background: linear-gradient(135deg, #ffffff 0%, #FFF7F5 100%);
+    }
+
+    .tool-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tool-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #FFD9C9 0%, #FFF7F5 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      flex-shrink: 0;
+      border: 1px solid #FFD9C9;
+    }
+
+    .tool-card:hover .tool-icon {
+      background: linear-gradient(135deg, #F26B4F, #FF8F76);
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+
+    .tool-card h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #302A40;
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+
+    .tool-card p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .tool-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .feature-tag {
+      background: #FFF7F5;
+      color: #F26B4F;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid #FFD9C9;
+    }
+
+    .tool-badge {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      padding: 0.4rem 0.85rem;
+      background: linear-gradient(135deg, #F26B4F, #FF8F76);
+      color: white;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 12px rgba(242, 107, 79, 0.3);
+    }
+
+    /* Footer */
+    .footer {
+      background: #302A40;
+      color: white;
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #F26B4F, #A99AE7);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .footer-logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .footer-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    .footer-text {
+      color: #A99AE7;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #A99AE7, transparent);
+      margin: 2rem auto;
+      max-width: 600px;
+    }
+
+    .footer-note {
+      color: #888;
+      font-size: 0.85rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: #A99AE7;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: #F26B4F;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .header .subtitle {
+        font-size: 1rem;
+      }
+
+      .stats-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 2rem 1rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-text">DeepGuard</div>
+      </div>
+      <p class="subtitle">Enterprise-Grade AI Media Authentication Platform</p>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-content">
+      <div class="stat-item">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Detection Tools</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Media Types</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">Real-Time</div>
+        <div class="stat-label">Analysis Speed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">Cloud</div>
+        <div class="stat-label">Ready Deploy</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Authentication Services</h2>
+      <p class="section-description">
+        Select a verification service to analyze your media files for manipulation, 
+        synthetic content, or quality issues using advanced AI algorithms
+      </p>
+    </div>
+
+    <div class="tools-grid">
+      <!-- Image Analysis -->
+      <a href="image-analysis.html" class="tool-card">
+        <span class="tool-badge">Primary</span>
+        <div class="tool-header">
+          <div class="tool-icon">🖼️</div>
+          <h2>Image Authentication</h2>
+        </div>
+        <p>Advanced forensic analysis to detect manipulated or AI-generated images using computer vision and neural network detection.</p>
+        <div class="tool-features">
+          <span class="feature-tag">Face Detection</span>
+          <span class="feature-tag">CNN Analysis</span>
+          <span class="feature-tag">Forensics</span>
+        </div>
+      </a>
+
+      <!-- Video Analysis -->
+      <a href="video-analysis.html" class="tool-card">
+        <span class="tool-badge">Primary</span>
+        <div class="tool-header">
+          <div class="tool-icon">🎥</div>
+          <h2>Video Authentication</h2>
+        </div>
+        <p>Multi-frame temporal analysis to identify deepfakes, face swaps, and video manipulation across frames.</p>
+        <div class="tool-features">
+          <span class="feature-tag">Frame Analysis</span>
+          <span class="feature-tag">Temporal</span>
+          <span class="feature-tag">Face Tracking</span>
+        </div>
+      </a>
+
+      <!-- Audio Analysis -->
+      <a href="audio-analysis.html" class="tool-card">
+        <span class="tool-badge">Primary</span>
+        <div class="tool-header">
+          <div class="tool-icon">🎵</div>
+          <h2>Audio Authentication</h2>
+        </div>
+        <p>Spectrogram-based analysis to detect voice cloning, synthetic speech, and audio deepfakes using AI models.</p>
+        <div class="tool-features">
+          <span class="feature-tag">Voice Clone</span>
+          <span class="feature-tag">Spectrogram</span>
+          <span class="feature-tag">TTS Detection</span>
+        </div>
+      </a>
+
+      <!-- Blur Detection -->
+      <a href="blur-detection.html" class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">📐</div>
+          <h2>Quality Assessment</h2>
+        </div>
+        <p>Evaluate image quality by detecting blur, focus issues, and compression artifacts that may indicate processing.</p>
+        <div class="tool-features">
+          <span class="feature-tag">Sharpness</span>
+          <span class="feature-tag">Quality Score</span>
+        </div>
+      </a>
+
+      <!-- Noisy Audio Detection -->
+      <a href="noisy-audio.html" class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">🔊</div>
+          <h2>Audio Enhancement</h2>
+        </div>
+        <p>Process audio with background noise using advanced noise reduction before deepfake detection analysis.</p>
+        <div class="tool-features">
+          <span class="feature-tag">Noise Reduction</span>
+          <span class="feature-tag">SNR Analysis</span>
+        </div>
+      </a>
+
+      <!-- Analysis History -->
+      <a href="history.html" class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">📊</div>
+          <h2>Audit Trail</h2>
+        </div>
+        <p>Comprehensive audit trail with verification records, statistical analysis, and detailed forensic reports.</p>
+        <div class="tool-features">
+          <span class="feature-tag">Reports</span>
+          <span class="feature-tag">Analytics</span>
+          <span class="feature-tag">Export</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">🛡️</div>
+        <div class="footer-logo-text">DeepGuard</div>
+      </div>
+      <h3 class="footer-title">AI-Powered Media Authentication</h3>
+      <p class="footer-text">
+        Enterprise-grade platform for detecting deepfakes and verifying media authenticity
+      </p>
+      <div class="footer-divider"></div>
+      <p class="footer-note">© 2024 DeepGuard • Academic Research Project</p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Documentation</a>
+        <a href="#" class="footer-link">API Reference</a>
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

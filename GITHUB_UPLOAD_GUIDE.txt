@@ -1,0 +1,173 @@
+═══════════════════════════════════════════════════════════════════
+   📦 GITHUB UPLOAD GUIDE - DeepGuard Project
+═══════════════════════════════════════════════════════════════════
+
+Follow these steps to upload your project to GitHub:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1: CREATE GITHUB REPOSITORY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to: https://github.com
+2. Log in to your account (or create one if needed)
+3. Click the "+" icon in top-right corner
+4. Select "New repository"
+5. Fill in details:
+   - Repository name: deepguard-detection
+   - Description: AI-Powered Deepfake Detection System (99.94% accuracy)
+   - Choose: Public or Private
+   - DON'T initialize with README (we have one already)
+6. Click "Create repository"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2: INSTALL GIT (if not installed)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Download from: https://git-scm.com/download/win
+
+Or check if already installed:
+   git --version
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3: CONFIGURE GIT (First time only)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open Command Prompt and run:
+
+   git config --global user.name "Your Name"
+   git config --global user.email "your.email@example.com"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4: UPLOAD PROJECT TO GITHUB
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open Command Prompt in your project folder and run these commands:
+
+1. Navigate to project:
+   cd C:\Users\user\Downloads\deepfake-detection-system\deepfake-detection-system
+
+2. Initialize Git:
+   git init
+
+3. Add all files:
+   git add .
+
+4. Create first commit:
+   git commit -m "Initial commit: DeepGuard deepfake detection system with 99.94% accuracy"
+
+5. Link to GitHub (replace YOUR_USERNAME with your GitHub username):
+   git remote add origin https://github.com/YOUR_USERNAME/deepguard-detection.git
+
+6. Push to GitHub:
+   git branch -M main
+   git push -u origin main
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5: VERIFY UPLOAD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to: https://github.com/YOUR_USERNAME/deepguard-detection
+2. You should see all your files uploaded!
+3. The README.md will be displayed automatically
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  IMPORTANT NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ MODEL WEIGHTS (.pth files):
+  - These are EXCLUDED from upload (too large for GitHub)
+  - The .gitignore file prevents them from being uploaded
+  - Add download instructions in README for others
+
+✓ TRAINING DATA:
+  - Dataset folder is EXCLUDED (too large)
+  - Users can download from Kaggle using the link in README
+
+✓ VIRTUAL ENVIRONMENT:
+  - venv_gpu folder is EXCLUDED (shouldn't be uploaded)
+  - Users will create their own venv using requirements.txt
+
+✓ FILE SIZE LIMIT:
+  - GitHub has 100MB file size limit
+  - Large files should be hosted elsewhere (Google Drive, Kaggle, etc.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔄 FUTURE UPDATES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+When you make changes and want to update GitHub:
+
+1. Check status:
+   git status
+
+2. Add changed files:
+   git add .
+
+3. Commit changes:
+   git commit -m "Description of what you changed"
+
+4. Push to GitHub:
+   git push
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📤 ALTERNATIVE: UPLOAD VIA GITHUB WEBSITE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+If you prefer not to use command line:
+
+1. Create repository on GitHub
+2. Click "uploading an existing file"
+3. Drag and drop your project folders
+4. Click "Commit changes"
+
+Note: This method is slower for large projects!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 RECOMMENDED REPOSITORY SETTINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After uploading, configure your repository:
+
+1. Add Topics (in "About" section):
+   - deepfake-detection
+   - machine-learning
+   - pytorch
+   - computer-vision
+   - efficientnet
+   - deeplearning
+
+2. Add a License:
+   - Go to "Add file" → "Create new file"
+   - Name it: LICENSE
+   - Click "Choose a license template"
+   - Select: MIT License
+   - Fill in your details and commit
+
+3. Enable GitHub Pages (optional):
+   - Go to Settings → Pages
+   - Deploy frontend as a static site
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🆘 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: "Permission denied (publickey)"
+Solution: Set up SSH key or use HTTPS with personal access token
+
+Problem: "File too large"
+Solution: Check .gitignore, remove large files from staging:
+   git rm --cached path/to/large/file
+
+Problem: "Remote origin already exists"
+Solution: Remove and re-add:
+   git remote remove origin
+   git remote add origin https://github.com/YOUR_USERNAME/repo.git
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ That's it! Your DeepGuard project is now on GitHub!
+
+Share the link with recruiters, add it to your resume, and show off
+your 99.94% accuracy deepfake detection system! 🎉
+
+═══════════════════════════════════════════════════════════════════

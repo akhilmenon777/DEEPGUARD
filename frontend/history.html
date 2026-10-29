@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analysis History - DeepGuard</title>
+  <link rel="stylesheet" href="/static/css/deepguard-theme.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blush: #FFF7F5;
+      --peach: #FFD9C9;
+      --peach-light: #FFE8DF;
+      --voltage: #F26B4F;
+      --lilac: #A99AE7;
+      --ink: #302A40;
+      --ink-light: #6B6B6B;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--blush) 0%, var(--peach-light) 100%);
+      min-height: 100vh;
+      color: var(--ink);
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--voltage) 0%, #f7931e 100%);
+      color: white;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(242, 107, 79, 0.3);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateX(-4px);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      opacity: 0.95;
+      font-size: 1.1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .controls {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-button {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      background: white;
+      color: var(--ink-light);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .filter-button:hover {
+      border-color: var(--voltage);
+      color: var(--voltage);
+      transform: translateY(-2px);
+    }
+
+    .filter-button.active {
+      background: linear-gradient(135deg, var(--voltage) 0%, #f7931e 100%);
+      color: white;
+      border-color: var(--voltage);
+      box-shadow: 0 4px 15px rgba(242, 107, 79, 0.3);
+    }
+
+    .clear-button {
+      padding: 0.75rem 1.5rem;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);
+    }
+
+    .clear-button:hover {
+      background: #d32f2f;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #ff6b35;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .history-list {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .history-item {
+      padding: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      transition: background 0.2s ease;
+    }
+
+    .history-item:hover {
+      background: #fafafa;
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+    }
+
+    .history-info {
+      flex: 1;
+    }
+
+    .history-filename {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: #1a1a1a;
+    }
+
+    .history-meta {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .history-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .badge-real {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .badge-fake {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .badge-suspicious {
+      background: #fff8e1;
+      color: #f57c00;
+    }
+
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.3;
+    }
+
+    .empty-text {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-subtext {
+      color: #999;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .history-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-group {
+        flex-direction: column;
+      }
+
+      .filter-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <a href="/" class="back-button">← Back to Home</a>
+      <h1>📊 Analysis History</h1>
+      <p class="subtitle">View and manage your detection records</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Statistics -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="totalCount">0</div>
+        <div class="stat-label">Total Analyses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="realCount">0</div>
+        <div class="stat-label">Real Content</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="fakeCount">0</div>
+        <div class="stat-label">Fake Content</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="suspiciousCount">0</div>
+        <div class="stat-label">Suspicious Content</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="filter-group">
+        <button class="filter-button active" data-filter="all">All</button>
+        <button class="filter-button" data-filter="Real">Real</button>
+        <button class="filter-button" data-filter="Fake">Fake</button>
+        <button class="filter-button" data-filter="Suspicious">Suspicious</button>
+      </div>
+      <button class="clear-button" onclick="clearHistory()">Clear All History</button>
+    </div>
+
+    <!-- History List -->
+    <div class="history-list" id="historyList">
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-text">No analysis history yet</div>
+        <div class="empty-subtext">Start analyzing images, videos, or audio files to see results here</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentFilter = 'all';
+
+    // Load history on page load
+    window.addEventListener('DOMContentLoaded', loadHistory);
+
+    async function loadHistory() {
+      try {
+        const response = await fetch('/api/history');
+        const data = await response.json();
+        
+        displayHistory(data.history || []);
+        updateStats(data.history || []);
+      } catch (error) {
+        console.error('Error loading history:', error);
+      }
+    }
+
+    function displayHistory(history) {
+      const historyList = document.getElementById('historyList');
+      
+      if (history.length === 0) {
+        historyList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-text">No analysis history yet</div>
+            <div class="empty-subtext">Start analyzing images, videos, or audio files to see results here</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Filter history
+      let filteredHistory = history;
+      if (currentFilter !== 'all') {
+        filteredHistory = history.filter(item => item.verdict === currentFilter);
+      }
+
+      if (filteredHistory.length === 0) {
+        historyList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <div class="empty-text">No ${currentFilter.toLowerCase()} results found</div>
+            <div class="empty-subtext">Try a different filter</div>
+          </div>
+        `;
+        return;
+      }
+
+      historyList.innerHTML = filteredHistory.map(item => {
+        const icon = getMediaIcon(item.media_type);
+        const badgeClass = `badge-${item.verdict.toLowerCase()}`;
+        
+        return `
+          <div class="history-item">
+            <div class="history-icon">${icon}</div>
+            <div class="history-info">
+              <div class="history-filename">${item.filename}</div>
+              <div class="history-meta">
+                <span>📅 ${item.timestamp}</span>
+                <span>🎯 ${item.probability_pct}% probability</span>
+                <span>📊 ${item.confidence} confidence</span>
+              </div>
+            </div>
+            <div class="history-badge ${badgeClass}">
+              ${item.verdict}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getMediaIcon(type) {
+      const icons = {
+        'image': '🖼️',
+        'video': '🎥',
+        'audio': '🎵'
+      };
+      return icons[type] || '📄';
+    }
+
+    function updateStats(history) {
+      document.getElementById('totalCount').textContent = history.length;
+      document.getElementById('realCount').textContent = history.filter(h => h.verdict === 'Real').length;
+      document.getElementById('fakeCount').textContent = history.filter(h => h.verdict === 'Fake').length;
+      document.getElementById('suspiciousCount').textContent = history.filter(h => h.verdict === 'Suspicious').length;
+    }
+
+    // Filter buttons
+    document.querySelectorAll('.filter-button').forEach(button => {
+      button.addEventListener('click', function() {
+        // Update active state
+        document.querySelectorAll('.filter-button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update filter
+        currentFilter = this.dataset.filter;
+        loadHistory();
+      });
+    });
+
+    async function clearHistory() {
+      if (!confirm('Are you sure you want to clear all history? This cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/clear-history', {
+          method: 'POST'
+        });
+        
+        if (response.ok) {
+          loadHistory();
+          alert('History cleared successfully!');
+        }
+      } catch (error) {
+        console.error('Error clearing history:', error);
+        alert('Failed to clear history. Please try again.');
+      }
+    }
+
+    // Auto-refresh every 5 seconds
+    setInterval(loadHistory, 5000);
+  </script>
+</body>
+</html>

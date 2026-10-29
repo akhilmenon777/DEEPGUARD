@@ -1,0 +1,39 @@
+"""
+Configuration constants and paths for Deepfake Detection System.
+Aligned with project specifications (Yash Jain, Akhil Menon, Taaksh Patel).
+"""
+import os
+from pathlib import Path
+
+# Base paths
+BASE_DIR = Path(__file__).resolve().parent.parent
+BACKEND_DIR = BASE_DIR / "backend"
+WEIGHTS_DIR = BACKEND_DIR / "weights"
+WEIGHTS_DIR.mkdir(parents=True, exist_ok=True)
+SAMPLE_DATA_DIR = BASE_DIR / "sample_data"
+SAMPLE_DATA_DIR.mkdir(parents=True, exist_ok=True)
+TEMP_UPLOAD_DIR = BACKEND_DIR / "temp_uploads"
+TEMP_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+# Image / Video settings
+IMG_SIZE = 224
+MAX_FRAMES = 20
+ALLOWED_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
+ALLOWED_VIDEO_EXT = {".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v"}
+ALLOWED_AUDIO_EXT = {".wav", ".mp3", ".flac", ".ogg", ".m4a"}
+
+# Decision Engine Thresholds
+VISUAL_AUTHENTIC_THRESHOLD = 0.35
+VISUAL_SUSPICIOUS_THRESHOLD = 0.65
+AUDIO_SYNTHETIC_THRESHOLD = 0.50
+
+# Audio settings
+AUDIO_SAMPLE_RATE = 16000
+AUDIO_DURATION_SEC = 4.0
+AUDIO_NUM_MELS = 128
+AUDIO_N_FFT = 1024
+AUDIO_HOP_LENGTH = 512
+
+# Model weights
+GEND_WEIGHTS_PATH = WEIGHTS_DIR / "gend_vit_best.pth"
+AUDIO_CNN_WEIGHTS_PATH = WEIGHTS_DIR / "audio_cnn_best.pth"

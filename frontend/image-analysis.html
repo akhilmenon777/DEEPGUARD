@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Authentication - DeepGuard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/deepguard-theme.css">
+  <style>
+    /* Inline critical styles as fallback */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #FFF7F5;
+      color: #302A40;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #F26B4F 0%, #FF8F76 100%);
+      color: white;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(242, 107, 79, 0.2);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .back-button {
+      display: inline-block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      opacity: 0.95;
+      font-size: 1.05rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #FFD9C9;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(242, 107, 79, 0.08);
+      margin-bottom: 2rem;
+    }
+
+    .upload-zone {
+      border: 2px dashed #FFD9C9;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #FFF7F5 0%, #ffffff 100%);
+    }
+
+    .upload-zone:hover {
+      border-color: #F26B4F;
+      background: linear-gradient(135deg, #FFD9C9 0%, #FFF7F5 100%);
+    }
+
+    .upload-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #F26B4F, #FF8F76);
+      color: white;
+      border: none;
+      padding: 0.875rem 2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(242, 107, 79, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(242, 107, 79, 0.4);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 4px solid #FFD9C9;
+      border-top: 4px solid #F26B4F;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      background: linear-gradient(135deg, #ffebee, #ffcdd2);
+      color: #c62828;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      margin: 1rem 0;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .result-card {
+      display: none;
+      background: white;
+      border: 1px solid #FFD9C9;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(242, 107, 79, 0.1);
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .verdict {
+      text-align: center;
+      padding: 2rem;
+      border-radius: 12px;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+    }
+
+    .verdict.real {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      color: #2e7d32;
+      border: 2px solid #81c784;
+    }
+
+    .verdict.fake {
+      background: linear-gradient(135deg, #ffebee, #ffcdd2);
+      color: #c62828;
+      border: 2px solid #ef5350;
+    }
+
+    .verdict.suspicious {
+      background: linear-gradient(135deg, #fff8e1, #ffe082);
+      color: #f57c00;
+      border: 2px solid #ffb74d;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .detail-item {
+      background: #FFF7F5;
+      padding: 1.25rem;
+      border-radius: 12px;
+      border: 1px solid #FFD9C9;
+    }
+
+    .detail-label {
+      font-size: 0.85rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .detail-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #302A40;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-preview {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .file-preview img {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 12px;
+      border: 2px solid #FFD9C9;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <a href="/" class="back-button">← Back to Home</a>
+      <a href="/" class="logo">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-text">DeepGuard</div>
+      </a>
+      <h1>🖼️ Image Authentication</h1>
+      <p class="subtitle">Advanced AI-powered deepfake detection for images</p>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Upload Section -->
+    <div class="card">
+      <h2 style="margin-bottom: 1.5rem; color: #302A40; font-size: 1.5rem;">Upload Image for Analysis</h2>
+      
+      <div class="upload-zone" id="dropZone">
+        <div class="upload-icon">📸</div>
+        <h3 style="margin-bottom: 0.75rem; color: #302A40;">Drop your image file here</h3>
+        <p style="color: #666; margin-bottom: 1rem;">or</p>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">
+          Choose Image File
+        </button>
+        <p style="color: #999; margin-top: 1rem; font-size: 0.9rem;">
+          Supported formats: JPG, PNG, WEBP (Max 10MB)
+        </p>
+      </div>
+
+      <input type="file" id="fileInput" accept="image/*,.jpg,.jpeg,.png,.webp">
+      
+      <div class="file-preview" id="filePreview"></div>
+      
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button class="btn" id="analyzeBtn" style="display: none;">
+          Analyze Image
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p style="color: #666; font-size: 1.05rem;">Analyzing image... Please wait</p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error" id="error"></div>
+
+    <!-- Results Section -->
+    <div class="result-card" id="results">
+      <h2 style="margin-bottom: 1.5rem; color: #302A40; text-align: center;">🔍 Analysis Results</h2>
+      
+      <div class="verdict" id="verdict"></div>
+      
+      <div class="detail-grid" id="details"></div>
+      
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn" onclick="location.reload()">
+          Analyze Another Image
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const results = document.getElementById('results');
+    const filePreview = document.getElementById('filePreview');
+    
+    let selectedFile = null;
+
+    // Drag and drop handlers
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragging');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragging');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragging');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      selectedFile = file;
+      
+      // Show file preview
+      const imageURL = URL.createObjectURL(file);
+      filePreview.innerHTML = `
+        <img src="${imageURL}" alt="Preview" style="max-height: 400px; border-radius: 12px; border: 2px solid #FFD9C9; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <p style="margin-top: 1rem; color: #666;">Selected: ${file.name}</p>
+      `;
+      
+      analyzeBtn.style.display = 'inline-block';
+      results.classList.remove('show');
+      error.classList.remove('show');
+    }
+
+    analyzeBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      loading.classList.add('show');
+      error.classList.remove('show');
+      results.classList.remove('show');
+      analyzeBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await fetch('/predict-image', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayResults(data);
+      } catch (err) {
+        error.textContent = `Error: ${err.message}. Make sure the server is running.`;
+        error.classList.add('show');
+      } finally {
+        loading.classList.remove('show');
+        analyzeBtn.disabled = false;
+      }
+    });
+
+    function displayResults(data) {
+      const verdict = document.getElementById('verdict');
+      const details = document.getElementById('details');
+
+      const verdictLower = data.verdict.toLowerCase();
+      verdict.className = `verdict ${verdictLower}`;
+      
+      let icon = '✅';
+      if (verdictLower === 'fake') icon = '⚠️';
+      if (verdictLower === 'suspicious') icon = '⚡';
+      
+      verdict.textContent = `${icon} ${data.verdict.toUpperCase()}`;
+
+      details.innerHTML = `
+        <div class="detail-item">
+          <div class="detail-label">Confidence</div>
+          <div class="detail-value">${data.confidence || 'N/A'}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Manipulation Probability</div>
+          <div class="detail-value">${data.probability_pct || 0}%</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Face Detected</div>
+          <div class="detail-value">${data.face_detected ? 'Yes' : 'No'}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Model Used</div>
+          <div class="detail-value" style="font-size: 1rem;">${data.model || 'AI Detector'}</div>
+        </div>
+      `;
+
+      results.classList.add('show');
+      
+      // Scroll to results
+      results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Authentication - DeepGuard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/deepguard-theme.css">
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <a href="/" class="back-button">← Back to Home</a>
+      <a href="/" class="logo">
+        <div class="logo-icon">🛡️</div>
+        <div class="logo-text">DeepGuard</div>
+      </a>
+      <h1>🎵 Audio Authentication</h1>
+      <p class="subtitle">Voice cloning and synthetic speech detection</p>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Upload Section -->
+    <div class="card">
+      <h2 style="margin-bottom: 1.5rem; color: #302A40; font-size: 1.5rem;">Upload Audio for Analysis</h2>
+      
+      <div class="upload-zone" id="dropZone">
+        <div class="upload-icon">🎙️</div>
+        <h3 style="margin-bottom: 0.75rem; color: #302A40;">Drop your audio file here</h3>
+        <p style="color: #666; margin-bottom: 1rem;">or</p>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">
+          Choose Audio File
+        </button>
+        <p style="color: #999; margin-top: 1rem; font-size: 0.9rem;">
+          Supported formats: WAV, MP3, M4A, FLAC (Max 10MB)
+        </p>
+      </div>
+
+      <input type="file" id="fileInput" accept="audio/*,.wav,.mp3,.m4a,.flac">
+      
+      <div class="file-preview" id="filePreview"></div>
+      
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button class="btn" id="analyzeBtn" style="display: none;">
+          Analyze Audio
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p style="color: #666; font-size: 1.05rem;">Analyzing audio... Please wait</p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error" id="error"></div>
+
+    <!-- Results Section -->
+    <div class="result-card" id="results">
+      <h2 style="margin-bottom: 1.5rem; color: #302A40; text-align: center;">🔍 Analysis Results</h2>
+      
+      <div class="verdict" id="verdict"></div>
+      
+      <div class="detail-grid" id="details"></div>
+      
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn" onclick="location.reload()">
+          Analyze Another Audio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    const results = document.getElementById('results');
+    const filePreview = document.getElementById('filePreview');
+    
+    let selectedFile = null;
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragging');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragging');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragging');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      selectedFile = file;
+      
+      const audioURL = URL.createObjectURL(file);
+      filePreview.innerHTML = `
+        <audio controls style="width: 100%; max-width: 500px; margin: 1rem auto; display: block;">
+          <source src="${audioURL}" type="${file.type}">
+          Your browser does not support the audio element.
+        </audio>
+        <p style="margin-top: 1rem; color: #666; text-align: center;">Selected: ${file.name}</p>
+      `;
+      
+      analyzeBtn.style.display = 'inline-block';
+      results.classList.remove('show');
+      error.classList.remove('show');
+    }
+
+    analyzeBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      loading.classList.add('show');
+      error.classList.remove('show');
+      results.classList.remove('show');
+      analyzeBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await fetch('/predict-audio', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayResults(data);
+      } catch (err) {
+        error.textContent = `Error: ${err.message}. Make sure the server is running.`;
+        error.classList.add('show');
+      } finally {
+        loading.classList.remove('show');
+        analyzeBtn.disabled = false;
+      }
+    });
+
+    function displayResults(data) {
+      const verdict = document.getElementById('verdict');
+      const details = document.getElementById('details');
+
+      const verdictLower = data.verdict.toLowerCase();
+      verdict.className = `verdict ${verdictLower}`;
+      
+      let icon = '✅';
+      if (verdictLower === 'fake') icon = '⚠️';
+      if (verdictLower === 'suspicious') icon = '⚡';
+      
+      verdict.textContent = `${icon} ${data.verdict.toUpperCase()}`;
+
+      let detailsHTML = `
+        <div class="detail-item">
+          <div class="detail-label">Confidence</div>
+          <div class="detail-value">${data.confidence || 'N/A'}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Probability</div>
+          <div class="detail-value">${data.probability_pct || 0}%</div>
+        </div>
+      `;
+
+      if (data.duration_sec !== undefined) {
+        detailsHTML += `
+          <div class="detail-item">
+            <div class="detail-label">Duration</div>
+            <div class="detail-value">${data.duration_sec.toFixed(2)}s</div>
+          </div>
+        `;
+      }
+
+      if (data.processing_time_sec !== undefined) {
+        detailsHTML += `
+          <div class="detail-item">
+            <div class="detail-label">Processing Time</div>
+            <div class="detail-value">${data.processing_time_sec.toFixed(2)}s</div>
+          </div>
+        `;
+      }
+
+      details.innerHTML = detailsHTML;
+      results.classList.add('show');
+      results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+</body>
+</html>
